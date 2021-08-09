@@ -1,0 +1,39 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+
+PROJECT(CyberHack)
+
+SET(CMAKE_CXX_STANDARD 20)
+SET(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+ADD_SUBDIRECTORY(imguiwrap)
+
+SET(
+	CYBERHACK_SOURCES
+
+	"cyberhack.cpp"
+	"hack.cpp"
+	"log.cpp"
+)
+
+SET(
+	CYBERHACK_HEADERS
+
+	"cyberhack.h"
+	"error.h"
+	"hack.h"
+	"log.h"
+)
+
+ADD_EXECUTABLE(
+	CyberHack
+
+	WIN32
+
+	${CYBERHACK_SOURCES}
+	${CYBERHACK_HEADERS}
+)
+
+TARGET_LINK_LIBRARIES(
+	CyberHack
+	PUBLIC imguiwrap
+)

@@ -1,0 +1,19 @@
+.vs/
+.vscode/
+.idea/
+out/
+build/
+build.lin/
+build.mac/
+build.win/
+build.wsl/
+wsl/
+Debug/
+Release/
+*~
+*.a
+imgui.ini
+
+# CMake
+CMakeSettings.json
+imguiwrap/
