@@ -17,19 +17,24 @@
 const size_t     testBuffer = 6;
 constexpr size_t maxDim     = 10;
 
-static const char testProblem[] = R"(
-1CE9BD1C1C
-1C1CBDE9BD
-E9E9BDE955
-55BD1CE91C
-BD1CE9BD1C
-)";
+#include <array>
+static constexpr std::array<uint8_t, 5> MatrixBytes = {
+    0x1C, 0x55, 0x7A, 0xBD, 0xE9,
+};
 
-static const char testGoals[] = R"(
-E9BDBD
-1C55E9
-E9BD1C
-)";
+//static const char testProblem[] = R"(
+//1CE9BD1C1C
+//1C1CBDE9BD
+//E9E9BDE955
+//55BD1CE91C
+//BD1CE9BD1C
+//)";
+//
+//static const char testGoals[] = R"(
+//E9BDBD
+//1C55E9
+//E9BD1C
+//)";
 
 enum class Mode : int
 {
@@ -54,7 +59,7 @@ mainMenuBar() noexcept
                 sExit = true;
         };
         dear::Menu("Debug", true) && [] {
-            addLogDebugOption();
+            gLogger.DrawShowMenuOption();
         };
     };
 }
@@ -257,7 +262,7 @@ refreshProblem(Hack& hack)
 }
 
 int
-WinMain()
+main(int argc, const char* argv[])
 {
     static Hack hack{};
 
@@ -268,9 +273,9 @@ WinMain()
     };
 
     sProblem.reserve(5 * 10 * 10 + 16);
-    sProblem = testProblem;
+    sProblem = "";  // testProblem;
     sGoals.reserve(5 * 10 * 8 + 16);
-    sGoals = testGoals;
+    sGoals = "";  // testGoals;
 
     imgui_main(config, []() -> ImGuiWrapperReturnType {
         if (sExit)
@@ -296,7 +301,7 @@ WinMain()
             drawGoals(hack);
         };
 
-		showLog();
+        gLogger.Draw();
 
         if (!sSolutionError.what_.empty()) {
             if (ImGui::BeginPopup("WHOOPS")) {
@@ -308,3 +313,11 @@ WinMain()
         return {};
     });
 }
+
+#if defined(_WIN32)
+int
+WinMain()
+{
+    return main(0, nullptr);
+}
+#endif

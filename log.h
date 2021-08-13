@@ -4,10 +4,29 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
-extern void showLog() noexcept;
-extern void guiLog(std::string) noexcept;
-extern void addLogDebugOption() noexcept;
+#include "imgui.h"
+
+struct Logger final
+{
+    Logger() noexcept {}
+
+    void Clear() noexcept;
+
+    Logger& operator<<(std::string_view s) noexcept;
+
+    void Draw() noexcept;
+
+    void DrawShowMenuOption() noexcept;
+
+public:
+    bool            open_{false};
+    ImGuiTextBuffer buffer_{};
+    ImVector<int>   offsets_{};
+};
+
+extern Logger gLogger;
 
 template<size_t N>
 std::string
@@ -34,5 +53,5 @@ template<typename... Args>
 void
 Log(Args&&... args)
 {
-    (guiLog(format(args)), ...);
+    (gLogger.operator<<(format(args)), ...);
 }

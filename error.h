@@ -7,13 +7,13 @@
 
 struct Error final
 {
-	constexpr Error() noexcept = default;
-	constexpr Error(std::string_view what) noexcept : what_{ what } {}
+    constexpr Error() noexcept = default;
+    constexpr Error(std::string_view what) noexcept : what_{what} {}
 
-	Error(const Error&) = default;
-	Error(Error&&) = default;
-	Error& operator=(const Error&) = default;
-	Error& operator=(Error&&) = default;
+    Error(const Error&) = default;
+    Error(Error&&)      = default;
+    Error& operator=(const Error&) = default;
+    Error& operator=(Error&&) = default;
 
-	std::string what_{};
+    std::string what_{};
 };

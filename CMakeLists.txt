@@ -22,7 +22,7 @@ SET(
 	"error.h"
 	"hack.h"
 	"log.h"
-)
+ )
 
 ADD_EXECUTABLE(
 	CyberHack

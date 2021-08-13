@@ -3,64 +3,44 @@
 
 #include "log.h"
 
-#include "imgui.h"
 #include "imguiwrap.dear.h"
 
-#include <string_view>
-
-struct Logger final
-{
-    bool            open_{false};
-    ImGuiTextBuffer buffer_{};
-    ImVector<int>   offsets_{};
-
-    Logger() noexcept {}
-
-    void Clear() noexcept
-    {
-        buffer_.clear();
-        offsets_.clear();
-        offsets_.push_back(0);
-    }
-
-    void operator<<(std::string_view s) noexcept { buffer_.append(s.data(), s.data() + s.length()); }
-
-    static constexpr ImGuiWindowFlags logWindowFlags{ImGuiWindowFlags_None};
-
-    void Draw() noexcept
-    {
-        if (!open_ || buffer_.empty())
-            return;
-
-        // static WindowFlagEditor flagEditor("Log Window"s, logwindow_flags);
-        // flagEditor.draw();
-
-        ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_FirstUseEver);
-        dear::Begin("Log", &open_, logWindowFlags) && [&] {
-            ImGui::TextUnformatted(buffer_.begin(), buffer_.end());
-
-            if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
-                ImGui::SetScrollHereY(1.0f);
-        };
-    }
-};
-
-static Logger sLogger{};
+Logger gLogger{};
 
 void
-guiLog(std::string text) noexcept
+Logger::Clear() noexcept
 {
-    sLogger << text;
+    buffer_.clear();
+    offsets_.clear();
+    offsets_.push_back(0);
 }
 
-void showLog() noexcept
+Logger&
+Logger::operator<<(std::string_view s) noexcept
 {
-	sLogger.Draw();
+    buffer_.append(s.data(), s.data() + s.length());
+    return *this;
 }
 
 void
-addLogDebugOption() noexcept
+Logger::Draw() noexcept
 {
-    dear::MenuItem("Show Log", &sLogger.open_, sLogger.buffer_.empty() == false);
+    if (!open_ || buffer_.empty())
+        return;
+
+    static constexpr ImGuiWindowFlags LogWindowFlags{ImGuiWindowFlags_None};
+
+    ImGui::SetNextWindowSize(ImVec2(400, 200), ImGuiCond_FirstUseEver);
+    dear::Begin("Log", &open_, LogWindowFlags) && [&] {
+        ImGui::TextUnformatted(buffer_.begin(), buffer_.end());
+
+        if (ImGui::GetScrollY() >= ImGui::GetScrollMaxY())
+            ImGui::SetScrollHereY(1.0f);
+    };
 }
-            
+
+void
+Logger::DrawShowMenuOption() noexcept
+{
+    dear::MenuItem("Show Log", &open_, buffer_.empty() == false);
+}
